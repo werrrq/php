@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subject = trim(strip_tags($_POST['subject'] ?? ''));
     $body = trim(strip_tags($_POST['body'] ?? ''));
     
-    $to = 'vadim.voloshin.228@mail.ru'; 
+    $to = 'andrekozin@icloud.com'; 
 
     // Дополнительные заголовки по заданию
     $headers = "From: admin@center.ogu\r\n";
