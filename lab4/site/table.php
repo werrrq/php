@@ -1,4 +1,3 @@
-
 <?php
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$cols = abs((int) $_POST['cols']);
