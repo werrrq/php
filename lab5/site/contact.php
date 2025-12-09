@@ -1,4 +1,3 @@
-
 <?php
 /*
  * Файл contact.php (фрагмент для index.php)
