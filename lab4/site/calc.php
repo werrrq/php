@@ -1,4 +1,3 @@
-
 <?php
 $result = null;
 $error = null;
