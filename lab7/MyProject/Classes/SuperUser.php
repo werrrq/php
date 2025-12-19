@@ -1,47 +1,38 @@
 <?php
 declare(strict_types=1);
-
 namespace MyProject\Classes;
 
-/**
- * Класс SuperUser описывает пользователя с правами администратора.
- * Наследуется от класса User.
- */
+
 class SuperUser extends User
 {
-    /** @var string Роль пользователя */
-    public string $role;
+    public $role;
 
     /**
-     * Конструктор супер-пользователя.
-     * Принимает дополнительный параметр $role.
-     *
-     * @param string $name Имя
-     * @param string $login Логин
-     * @param string $password Пароль
-     * @param string $role Роль
+     * Конструктор класса SuperUser.
+     * 
+     * @param string $name Имя пользователя.
+     * @param string $login Логин пользователя.
+     * @param string $password Пароль пользователя.
+     * @param string $role Роль суперпользователя.
      */
-    public function __construct(string $name, string $login, string $password, string $role)
+    public function __construct($name, $login, $password, $role)
     {
-        // Вызываем конструктор родительского класса (User)
         parent::__construct($name, $login, $password);
-        
-        // Инициализируем собственное свойство
         $this->role = $role;
     }
 
     /**
-     * Перегруженный метод вывода информации.
-     * Добавляет вывод роли.
+     * Возвращает HTML с информацией о суперпользователе.
      *
-     * @return void
+     * @return string
      */
-    public function showInfo(): void
+    public function showInfo(): string  
     {
-        // Вызываем метод родителя для вывода основных данных
-        parent::showInfo();
-        
-        // Добавляем вывод роли
-        echo "<p style='color: red;'>Role: <strong>{$this->role}</strong></p><hr>";
+        return "<div class=\"super-user-info\">
+                    <h3>Super User Info</h3>
+                    <p><strong>Name:</strong> {$this->name}</p>
+                    <p><strong>Login:</strong> {$this->login}</p>
+                    <p><strong>Role:</strong> {$this->role}</p>
+                </div>";
     }
 }
