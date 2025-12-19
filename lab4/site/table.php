@@ -1,33 +1,56 @@
 <?php
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-	$cols = abs((int) $_POST['cols']);
-	$rows = abs((int) $_POST['rows']);
-	$color = trim(strip_tags($_POST['color']));
+// Функция для отрисовки таблицы
+function drawTable($cols, $rows, $color) {
+    echo "<table border='1'>";
+    for ($tr = 1; $tr <= $rows; $tr++) {
+        echo "<tr>";
+        for ($td = 1; $td <= $cols; $td++) {
+            if ($tr == 1 || $td == 1) {
+                echo "<th style='background-color: $color; padding: 5px;'>" . $tr * $td . "</th>";
+            } else {
+                echo "<td style='padding: 5px;'>" . $tr * $td . "</td>";
+            }
+        }
+        echo "</tr>";
+    }
+    echo "</table>";
 }
-// Условие сокращенной записи из задания: ($cols) ? $cols : 10;
-$cols = ($cols ?? false) ? $cols : 10;
-$rows = ($rows ?? false) ? $rows : 10;
-$color = ($color ?? false) ? $color : '#ffff00';
+
+// Инициализация переменных со значениями по умолчанию
+$cols = 10;
+$rows = 10;
+$color = '#ffff00';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $cols = abs((int) ($_POST['cols'] ?? 0));
+    $rows = abs((int) ($_POST['rows'] ?? 0));
+    $color = trim(strip_tags($_POST['color'] ?? ''));
+    
+    // Установка значений по умолчанию, если введены некорректные данные
+    $cols = $cols > 0 ? $cols : 10;
+    $rows = $rows > 0 ? $rows : 10;
+    $color = !empty($color) ? htmlspecialchars($color) : '#ffff00';
+}
 ?>
 <section>
-    
     <!-- Action должен быть REQUEST_URI, чтобы сохранить параметр ?id=table -->
-    <form action='<?= $_SERVER['REQUEST_URI']?>' method="POST">
-      <label>Количество колонок: </label><br>
-      <input name='cols' type='text' value='<?= $cols ?>'><br>
-      
-      <label>Количество строк: </label><br>
-      <input name='rows' type='text' value='<?= $rows ?>'><br>
-      
-      <label>Цвет: </label><br>
-      <input name='color' type='color' value='<?= $color ?>' list="listColors">
-      <datalist id="listColors">
-        <option>#ff0000</option>
-        <option>#00ff00</option>
-        <option>#0000ff</option>
-      </datalist>
-      <br><br>
-      <input type='submit' value='Создать'>
+    <form action='<?= htmlspecialchars($_SERVER['REQUEST_URI']) ?>' method="POST">
+        <label>Количество колонок: </label><br>
+        <input name='cols' type='text' value='<?= $cols ?>'><br>
+        
+        <label>Количество строк: </label><br>
+        <input name='rows' type='text' value='<?= $rows ?>'><br>
+        
+        <label>Цвет: </label><br>
+        <input name='color' type='color' value='<?= $color ?>' list="listColors">
+        <datalist id="listColors">
+            <option value="#ff0000">Красный</option>
+            <option value="#00ff00">Зеленый</option>
+            <option value="#0000ff">Синий</option>
+            <option value="#ffff00">Желтый</option>
+        </datalist>
+        <br><br>
+        <input type='submit' value='Создать'>
     </form>
     <br>
     <!-- Таблица -->
