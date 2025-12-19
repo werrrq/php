@@ -1,66 +1,52 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Лабораторная №6. Задание 1: Cookies.
- * Счетчик посещений и дата последнего визита.
- */
-
 /*
- ЗАДАНИЕ 1
+ЗАДАНИЕ 1
+- Инициализируйте переменную для подсчета количества посещений
+- Если соответствующие данные передавались через куки
+  сохраняйте их в эту переменную
+- Нарастите счетчик посещений
+- Инициализируйте переменную для хранения значения последнего посещения страницы
+- Если соответствующие данные передавались из куки, отфильтруйте их и сохраните в эту переменную.
+  Для фильтрации используйте функции trim(), htmlspecialchars()
+- С помощью функции setcookie() установите соответствующие куки.  Задайте время хранения куки 1 сутки.
+  Для задания времени последнего посещения страницы используйте функцию date()
 */
 
-// 1. Инициализируйте переменную для подсчета количества посещений
-$visits = 0;
-
-// 2. Если данные передавались через куки, сохраняйте их
-if (isset($_COOKIE['visitCount'])) {
-    $visits = (int)$_COOKIE['visitCount'];
+$visits = 1;
+if (isset($_COOKIE['visits'])) {
+    $visits = (int) $_COOKIE['visits'] + 1;
 }
 
-// 3. Нарастите счетчик посещений
-$visits++;
-
-// 4. Инициализируйте переменную для хранения последнего посещения
-$lastVisit = '';
-
-// 5. Если данные передавались, отфильтруйте и сохраните
-if (isset($_COOKIE['lastVisit'])) {
-    $lastVisit = htmlspecialchars(trim($_COOKIE['lastVisit']));
+$visitMessage = 'Добро пожаловать!';
+if (isset($_COOKIE['visitMessage'])) {
+    $visitMessage = htmlspecialchars(trim($_COOKIE['visitMessage']));
+    $visitMessage = "<p>Последнее посещение: $visitMessage</p>";
 }
 
-// 6. Установите куки на сутки (86400 секунд)
-setcookie('visitCount', (string)$visits, time() + 86400);
-
-// Текущая дата для записи в куки (будет показана при следующем заходе)
-$currentDate = date('d-m-Y H:i:s');
-setcookie('lastVisit', $currentDate, time() + 86400);
-
+setcookie('visits', (string) $visits, time() + 86400);
+setcookie('visitMessage', date("Y-m-d H:i:s"), time() + 86400); // Время хранения куки — 1 сутки (86400 секунд)
 ?>
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Последний визит</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Последний визит</title>
 </head>
+
 <body>
 
-<h1>Последний визит</h1>
+    <h1>Последний визит</h1>
 
-<?php
-/*
- ЗАДАНИЕ 2
-*/
-if ($visits === 1) {
-    echo "<h2>Добро пожаловать!</h2>";
-    echo "<p>Вы зашли на страницу первый раз.</p>";
-} else {
-    echo "<h2>Вы зашли на страницу $visits раз</h2>";
-    echo "<p>Последнее посещение: $lastVisit</p>";
-}
-?>
+    <?php
+    echo "<p>Количество посещений: $visits</p>";
+    echo $visitMessage;
+    ?>
 
 </body>
+
 </html>
