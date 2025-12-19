@@ -1,31 +1,21 @@
 <?php
-declare(strict_types=1);
-
 namespace MyProject\Classes;
 
-/**
- * Класс User описывает обычного пользователя системы.
- */
 class User
 {
-    /** @var string Имя пользователя */
-    public string $name;
 
-    /** @var string Логин пользователя */
-    public string $login;
-
-    /** @var string Пароль пользователя (закрытое свойство) */
-    private string $password;
+    public $name;
+    public $login;
+    private $password;
 
     /**
-     * Конструктор класса.
-     * Инициализирует свойства при создании объекта.
+     * Конструктор класса User.
      *
-     * @param string $name Имя
-     * @param string $login Логин
-     * @param string $password Пароль
+     * @param string $name Имя пользователя.
+     * @param string $login Логин пользователя.
+     * @param string $password Пароль пользователя.
      */
-    public function __construct(string $name, string $login, string $password)
+    public function __construct($name, $login, $password)
     {
         $this->name = $name;
         $this->login = $login;
@@ -35,24 +25,22 @@ class User
     /**
      * Выводит информацию о пользователе.
      *
-     * @return void
+     * @return string - Возвращает строкой HTML-блок с информацией о пользователе
      */
-    public function showInfo(): void
-    {
-        echo "<div style='border: 1px solid #ccc; padding: 10px; margin-bottom: 5px;'>";
-        echo "<p>Name: <strong>{$this->name}</strong></p>";
-        echo "<p>Login: <strong>{$this->login}</strong></p>";
-        // Пароль приватный, но внутри класса мы его видим
-        echo "<p>Pass: " . str_repeat("*", strlen($this->password)) . "</p>"; 
-        echo "</div>";
-    }
+    public function showInfo(): string   {
+        return "<div class=\"user-info\">
+                    <h3>User Info</h3>
+                    <p><strong>Name:</strong> {$this->name}</p>
+                    <p><strong>Login:</strong> {$this->login}</p>
+                </div>";
+    }   
 
     /**
-     * Деструктор класса.
-     * Срабатывает автоматически при удалении объекта.
+     * Деструктор класса User.
+     * Выводит сообщение об удалении пользователя.
      */
     public function __destruct()
     {
-        echo "<p>Пользователь <strong>{$this->login}</strong> удален.</p>";
+        echo "<p>Пользователь {$this->login} удален.</p>";
     }
 }
