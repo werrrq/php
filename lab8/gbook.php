@@ -55,11 +55,15 @@ if (isset($_GET['del'])) {
     $del = (int)$_GET['del']; // Фильтрация ID
     
     $sql = "DELETE FROM msgs WHERE id = $del";
-    mysqli_query($link, $sql);
+    $result = mysqli_query($link, $sql);
 
-    // Перезапрос страницы
-    header("Location: " . $_SERVER['PHP_SELF']);
-    exit;
+    if ($result) {
+        // Перезапрос страницы
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    } else {
+        echo "Ошибка удаления: " . mysqli_error($link);
+    }
 }
 
 ?>
@@ -72,6 +76,7 @@ if (isset($_GET['del'])) {
         body{font-family: sans-serif; padding: 20px;}
         form{background: #f4f4f4; padding: 20px; border-radius: 5px; margin-bottom: 20px;}
         .msg{border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 5px;}
+        .error{color: red; padding: 10px; background: #ffe6e6; border: 1px solid red;}
     </style>
 </head>
 <body>
@@ -96,29 +101,55 @@ if (isset($_GET['del'])) {
 $sql = "SELECT id, name, email, msg FROM msgs ORDER BY id DESC";
 $result = mysqli_query($link, $sql);
 
-// Закрываем соединение с БД (как в задании - до вывода)
-mysqli_close($link);
+// Проверяем, успешен ли запрос
+if (!$result) {
+    echo "<div class='error'>Ошибка выполнения запроса: " . mysqli_error($link) . "</div>";
+    echo "<div class='error'>Проверьте, существует ли таблица 'msgs' в базе данных.</div>";
+    
+    // Создаем таблицу, если её нет (раскомментировать при необходимости)
+    /*
+    $create_table = "CREATE TABLE IF NOT EXISTS msgs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        msg TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+    
+    if (mysqli_query($link, $create_table)) {
+        echo "<div class='error'>Таблица 'msgs' была создана. Обновите страницу.</div>";
+    } else {
+        echo "<div class='error'>Не удалось создать таблицу: " . mysqli_error($link) . "</div>";
+    }
+    */
+} else {
+    // Получаем количество записей
+    $count = mysqli_num_rows($result);
+    
+    echo "<p>Всего сообщений: <strong>$count</strong></p>";
+    
+    // Вывод в цикле
+    if ($count > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $id = $row['id'];
+            $name = htmlspecialchars($row['name']);
+            $email = htmlspecialchars($row['email']);
+            $msg = nl2br(htmlspecialchars($row['msg'])); // Сохраняем переносы строк
 
-// Получаем количество записей
-// Внимание: mysqli_num_rows требует активного $result, который мы получили до закрытия соединения
-$count = mysqli_num_rows($result);
-
-echo "<p>Всего сообщений: <strong>$count</strong></p>";
-
-// Вывод в цикле
-while ($row = mysqli_fetch_assoc($result)) {
-    $id = $row['id'];
-    $name = $row['name'];
-    $email = $row['email'];
-    $msg = nl2br($row['msg']); // Сохраняем переносы строк
-
-    echo "<div class='msg'>";
-    echo "<p><strong>$name</strong> (<a href='mailto:$email'>$email</a>)</p>";
-    echo "<p>$msg</p>";
-    // Ссылка на удаление
-    echo "<p align='right'><a href='?del=$id' onclick='return confirm(\"Удалить?\")'>Удалить</a></p>";
-    echo "</div>";
+            echo "<div class='msg'>";
+            echo "<p><strong>$name</strong> (<a href='mailto:$email'>$email</a>)</p>";
+            echo "<p>$msg</p>";
+            // Ссылка на удаление
+            echo "<p align='right'><a href='?del=$id' onclick='return confirm(\"Удалить?\")'>Удалить</a></p>";
+            echo "</div>";
+        }
+    } else {
+        echo "<p>Сообщений пока нет. Будьте первым!</p>";
+    }
 }
+
+// Закрываем соединение с БД
+mysqli_close($link);
 ?>
 
 </body>
